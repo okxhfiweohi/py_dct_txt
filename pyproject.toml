@@ -20,11 +20,11 @@ requires-python = ">= 3.10"
 
 [project.optional-dependencies]
 test = [
-    "coverage",  # testing
+    # "coverage",  # testing
     "pytest",  # testing
     "ruff",  # linting
     "ty", # checking types
-    "ipdb", # debugging
+    # "ipdb", # debugging
 ]
 
 [project.urls]
