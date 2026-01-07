@@ -75,7 +75,7 @@ class DctTxt:
             dst.l.extend(other.l)
         if other.s:
             dst.s = other.s
-        if other.v:
+        if other.v is not None:
             dst.v = other.v
         if len(other.kvs):
             dst.kvs.update(other.kvs)
