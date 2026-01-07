@@ -218,10 +218,18 @@ class DctTxt:
         comment_first, k, sep, v, comment_others = item
         if comment_first.startswith("/*!"):
             comment_first = "/*! " + comment_first[3:-2].strip() + " */"
-        else:
+        elif comment_first:
             comment_first = "/* " + comment_first[2:-2].strip() + " */"
-        comment_others = list(map(lambda v: f"/* {v[2:-2]} */", comment_others))
-        return (comment_first, k.strip(), sep, v, comment_others)
+
+        new_comment_others = []
+        for c in comment_others:
+            if not c or len(c) <= 4:
+                continue
+            c = v[2:-2].strip()
+            if c:
+                new_comment_others.append(f"/* {c} */")
+
+        return (comment_first, k.strip(), sep, v, new_comment_others)
 
 
 NestedDict = dict[str, dict[str, DctTxtItem]]
@@ -310,7 +318,7 @@ class DctTxtStore:
                 for i, batch in enumerate(
                     self.serializer.get_list_batch(group_l, batch_size)
                 ):
-                    if batch:
+                    if not batch:
                         continue
                     first_file_key = next((v for v in batch if v[1]), None)
                     last_file_key = next((v for v in reversed(batch) if v[1]), None)
@@ -320,8 +328,11 @@ class DctTxtStore:
                         self.serializer.save_list(batch, f)
                     self.saved_files.add(file_path)
                     info_file = index_path / self.saved_info_filename
-                    with open(info_file, "r") as f:
-                        info = json.load(f)
+                    if info_file.is_file():
+                        with open(info_file, "r") as f:
+                            info = json.load(f)
+                    else:
+                        info = {}
                     info[name + file_i] = {
                         "start": first_file_key,
                         "end": last_file_key,
