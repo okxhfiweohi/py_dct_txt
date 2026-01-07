@@ -4,13 +4,11 @@ import json
 import re
 import sys
 from collections import defaultdict
+from collections.abc import Collection, Iterable, Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import (
     Any,
-    Collection,
-    Iterable,
-    Iterator,
     TextIO,
     TypeAlias,
 )
@@ -250,9 +248,8 @@ class DctTxtStore:
     def file_line_iter(cls, files: list[Path]) -> Iterator[str]:
         assert all(path.is_file() for path in files)
         for path in files:
-            with open(path, "r", encoding="utf-8") as f:
-                for line in f:
-                    yield line
+            with open(path, encoding="utf-8") as f:
+                yield from f
 
     GROUP_NAME_PATTERN = re.compile(r"^([^/]+?)(?:__\d+)?\.dct\.txt$")
 
@@ -329,7 +326,7 @@ class DctTxtStore:
                     self.saved_files.add(file_path)
                     info_file = index_path / self.saved_info_filename
                     if info_file.is_file():
-                        with open(info_file, "r") as f:
+                        with open(info_file) as f:
                             info = json.load(f)
                     else:
                         info = {}
@@ -356,5 +353,5 @@ class DctTxtStore:
                 if not any(folder.iterdir()):
                     try:
                         folder.rmdir()
-                    except:
+                    except Exception:
                         pass

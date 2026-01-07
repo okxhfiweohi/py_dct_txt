@@ -4,12 +4,8 @@
 包含单元测试、集成测试和边界情况测试
 """
 
-import json
-import tempfile
 import time
-from io import StringIO
 from pathlib import Path
-from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -261,7 +257,7 @@ class TestDctTxt:
         assert test_file.stat().st_size > 0
 
         # 验证文件内容可重新加载
-        with open(test_file, "r", encoding="utf-8") as f:
+        with open(test_file, encoding="utf-8") as f:
             reloaded_dict, _ = dct_txt.read_as_dict(f)
         assert "key1" in reloaded_dict
 
@@ -404,23 +400,18 @@ class TestDctTxtStore:
 
     def test_transpose_dict(self):
         """测试字典转置"""
-        nested_dict = {
-            "group1": {"key1": "value1", "key2": "value2"},
-            "group2": {"key1": "value3", "key3": "value4"},
-        }
-
         # 创建模拟的DctTxtItem对象
         item1 = DctTxtItem(k="key1", s="value1")
         item2 = DctTxtItem(k="key2", s="value2")
         item3 = DctTxtItem(k="key1", s="value3")
         item4 = DctTxtItem(k="key3", s="value4")
 
-        nested_dict_with_items = {
+        nested_dict = {
             "group1": {"key1": item1, "key2": item2},
             "group2": {"key1": item3, "key3": item4},
         }
 
-        transposed = DctTxtStore.transpose_dict(nested_dict_with_items)
+        transposed = DctTxtStore.transpose_dict(nested_dict)
 
         assert "key1" in transposed
         assert "group1" in transposed["key1"]
@@ -576,14 +567,15 @@ multi_value_key := 值1 || 值2 || 值3 /* 行内注释 */
 
 nested_key >> [1, 2, {"nested": true, "items": [1, 2, 3]}]
 
-config_key <> name: 测试配置, enabled: true, settings: {timeout: 30, retries: 3}, tags: [重要, 测试]
+config_key <> name: 测试配置,\
+enabled: true, settings: {timeout: 30, retries: 3}, \
+tags: [重要, 测试]
 """
         test_file = tmp_path / "complex.dct.txt"
         test_file.write_text(complex_content, encoding="utf-8")
 
         # 往返测试
         store = DctTxtStore()
-        dct_txt = DctTxt()
 
         # 加载原始数据
         original_data = store.load(tmp_path)
@@ -622,7 +614,7 @@ class TestPerformance:
         # 性能测试
         start_time = time.time()
 
-        with open(test_file, "r", encoding="utf-8") as f:
+        with open(test_file, encoding="utf-8") as f:
             result = dct_txt.read_as_dict(f)
 
         end_time = time.time()
@@ -695,7 +687,7 @@ special_key := café naïve résumé
         test_file.write_text(unicode_content, encoding="utf-8")
 
         # 应该能够正确处理
-        with open(test_file, "r", encoding="utf-8") as f:
+        with open(test_file, encoding="utf-8") as f:
             result = dct_txt.read_as_dict(f)
 
         assert "normal_key" in result[0]
