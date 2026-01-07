@@ -317,8 +317,8 @@ class DctTxtStore:
                 ):
                     if not batch:
                         continue
-                    first_file_key = next((v for v in batch if v[1]), None)
-                    last_file_key = next((v for v in reversed(batch) if v[1]), None)
+                    first_file_key = next((v[1] for v in batch if v[1]), None)
+                    last_file_key = next((v[1] for v in reversed(batch) if v[1]), None)
                     file_i = f"__{i}" if i > 0 else ""
                     file_path = index_path / f"{name}{file_i}.dct.txt"
                     with open(file_path, "w", encoding="utf-8") as f:

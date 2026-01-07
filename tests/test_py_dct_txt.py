@@ -266,13 +266,13 @@ class TestDctTxt:
         # 无效YAML格式
         invalid_data = ["key >> [1, 2, 3"]  # 缺少闭合括号
         result = dct_txt.read_as_list(invalid_data)
-        # 应该能够优雅处理，而不是崩溃
+        assert len(result) == 1
 
         # 无效字典格式
         invalid_dict = ["key <> {invalid: json, missing: quote}"]
         result = dct_txt.read_as_list(invalid_dict)
         data_dict, _ = dct_txt.load_dict(result)
-        # 应该能够处理解析错误
+        assert len(data_dict["key"].kvs) == 0
 
     def test_batch_processing(self, dct_txt):
         """测试批量处理"""
@@ -340,7 +340,7 @@ class TestDctTxtStore:
         groups = {
             "group1": ["key1 := value1", "key2 => value2"],
             "group2": ["key1 := different_value", "key3 >> [1,2,3]"],
-            "group3": ["key4 <> {test: true}"],
+            "group3": ["key4 <> test: true"],
         }
 
         for group_name, lines in groups.items():
@@ -724,7 +724,7 @@ TEST_CASES = [
     },
     {
         "name": "yaml_dict",
-        "input": ["key <> {name: test}"],
+        "input": ["key <> name: test"],
         "expected_keys": ["key"],
         "expected_separator": "<>",
     },
