@@ -317,6 +317,8 @@ class DctTxtStore:
                 ):
                     if not batch:
                         continue
+                    if not name:
+                        name = "default"
                     first_file_key = next((v[1] for v in batch if v[1]), None)
                     last_file_key = next((v[1] for v in reversed(batch) if v[1]), None)
                     file_i = f"__{i}" if i > 0 else ""
@@ -355,3 +357,24 @@ class DctTxtStore:
                         folder.rmdir()
                     except Exception:
                         pass
+
+
+def add_item(key_dict: NestedDict, group: str, item: DctTxtItem):
+    key = item.k or item.anchor
+    if not key:
+        key = item.anchor = f"\t~{len(key_dict)}"
+    key_dict[key][group] = item
+
+
+def merge_key_dicts(dst: NestedDict, *others: NestedDict):
+    dct = DctTxt()
+    for other in others:
+        for key, groups in other.items():
+            if key not in dst and len(groups):
+                dst[key] = {}
+            for group_name, item in groups.items():
+                dst[key][group_name] = (
+                    dct._merge_item(dst[key][group_name], item)
+                    if group_name in dst[key]
+                    else item
+                )

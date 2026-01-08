@@ -644,7 +644,7 @@ class TestPerformance:
         tracemalloc.stop()
 
         # 峰值内存使用应该在合理范围内
-        assert peak < 10 * 1024 * 1024, f"内存使用过高: {peak}字节"  # 小于10MB
+        assert peak < 1 * 1024 * 1024, f"内存使用过高: {peak}字节"  # 小于1MB
 
 
 class TestErrorScenarios:
