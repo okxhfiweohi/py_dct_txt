@@ -69,11 +69,15 @@
    特别的, k 为空: 根据前面行最近的有值k, 自动分配一个 anchor
 7. 构建字典, 以 有值看或anchor 作为字典key,
    key 已经存在则尝试合并
-> [!INFO]
+
+> [!NOTE]
 > 存储过程相反
 > 特别的, 将所有顶格注释单独成行, 普通注释挪到行末
+---
+> [!IMPORTANT]
+> 反序列化时, k 仅使用 DctTxtItem().k, 不使用 anchor 或字典的key
 
-### sotre
+### store
 
 #### load
 
