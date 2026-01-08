@@ -9,7 +9,7 @@ from pathlib import Path
 
 import pytest
 
-from py_dct_txt.py_dct_txt import DctTxt, DctTxtItem, DctTxtStore
+from py_dct_txt import DctTxt, DctTxtItem, DctTxtStore
 from py_dct_txt.utils import (
     extract_inline_comments,
     normalize_to_ascii,
