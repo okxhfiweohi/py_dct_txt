@@ -1,5 +1,9 @@
 # py_dct_txt
 
+序列化/反序列化 dct_txt 格式
+
+语法定义或高亮参考: [dct_txt_ts](https://github.com/okxhfiweohi/dct_txt_ts.git)）
+
 ## dct_txt 格式
 
 `*.dct.txt` 本质是一个 `*.txt` 文本文件,

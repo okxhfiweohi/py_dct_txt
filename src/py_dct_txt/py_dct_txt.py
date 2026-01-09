@@ -363,6 +363,8 @@ def add_item(key_dict: NestedDict, group: str, item: DctTxtItem):
     key = item.k or item.anchor
     if not key:
         key = item.anchor = f"\t~{len(key_dict)}"
+    if key not in key_dict:
+        key_dict[key] = {}
     key_dict[key][group] = item
 
 
