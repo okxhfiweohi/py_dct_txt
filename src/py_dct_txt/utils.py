@@ -59,7 +59,7 @@ def split_by_first_sep(sep_group: re.Pattern, s: str) -> tuple[str, str, str]:
     return (parts[0], parts[1], parts[2]) if len(parts) == 3 else (s, "", "")
 
 
-@lru_cache(maxsize=1024*1024)
+@lru_cache(maxsize=128)
 def _normalize_to_ascii(s: str) -> str:
     normalized = unicodedata.normalize("NFKD", s)
     return "".join(c for c in normalized if unicodedata.category(c) != "Mn")

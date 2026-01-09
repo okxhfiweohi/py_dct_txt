@@ -52,6 +52,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+dirmap_options.json
 
 # Translations
 *.mo
