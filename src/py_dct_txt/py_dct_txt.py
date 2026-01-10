@@ -11,6 +11,7 @@ from typing import (
     Any,
     TextIO,
     TypeAlias,
+    TypeVar,
 )
 
 from .utils import (
@@ -303,6 +304,7 @@ class DctTxtStore:
         return res
 
     def save(self, key_dict: NestedDict, path: Path, *, batch_size=5000):
+        key_dict = self.sort_dict_key(key_dict)
         index_map = self.create_index_map(key_dict.keys())
         for index, keys in index_map.items():
             index_path = path / index
@@ -354,6 +356,18 @@ class DctTxtStore:
                         folder.rmdir()
                     except Exception:
                         pass
+
+    T = TypeVar("T")
+
+    @staticmethod
+    def sort_dict_key(key_dict: dict[str, T]):
+        return {
+            k: v
+            for k, v in sorted(
+                key_dict.items(),
+                key=lambda v: (normalize_to_ascii(v[0]).lower(), v[0].lower(), v[0]),
+            )
+        }
 
 
 def add_item(key_dict: NestedDict, group: str, item: DctTxtItem):
