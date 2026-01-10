@@ -333,6 +333,7 @@ class DctTxtStore:
                         "end": last_file_key,
                         "total": len(batch),
                     }
+            info = {k: v for k, v in sorted(info.items(), key=lambda i: i[0])}
             with open(info_file, "w") as f:
                 json.dump(info, f, ensure_ascii=False, indent=4)
             self.saved_files.add(info_file)
