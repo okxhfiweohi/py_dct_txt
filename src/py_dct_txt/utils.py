@@ -9,33 +9,35 @@ def _represent_none(dumper: yaml.SafeDumper, _):
     return dumper.represent_scalar("tag:yaml.org,2002:null", "_NULL")
 
 
-yaml.SafeDumper.add_representer(type(None), _represent_none)
+class CustomSafeDumper(yaml.SafeDumper):
+    pass
+
+
+CustomSafeDumper.add_representer(type(None), _represent_none)
 
 
 def yaml_flow_dumps(data) -> str:
+    result = yaml.dump(
+        data,
+        # stream,
+        Dumper=CustomSafeDumper,
+        # 不换行
+        default_flow_style=True,
+        width=float("inf"),
+        # 省引号
+        default_style=None,
+        allow_unicode=True,
+        # 取消缩进（行内无需）
+        indent=0,
+        sort_keys=False,
+    )
     return (
-        yaml.safe_dump(
-            data,
-            # 不换行
-            default_flow_style=True,
-            width=float("inf"),
-            # 省引号
-            default_style=None,
-            allow_unicode=True,
-            # 取消缩进（行内无需）
-            indent=0,
-            sort_keys=False,
-        )
-        .strip()
-        .replace(": !!null '_NULL'", "")
-        .replace("!!null '_NULL'", "null")
+        result.strip().replace(": !!null '_NULL'", "").replace("!!null '_NULL'", "null")
     )
 
 
 def yaml_flow_loads(yaml_str) -> dict:
-    return yaml.safe_load(
-        yaml_str,
-    )
+    return yaml.safe_load(yaml_str)
 
 
 _inline_comment_pattern = re.compile(r"/\*.*?\*/")
@@ -63,6 +65,7 @@ def split_by_first_sep(sep_group: re.Pattern, s: str) -> tuple[str, str, str]:
 def _normalize_to_ascii(s: str) -> str:
     normalized = unicodedata.normalize("NFKD", s)
     return "".join(c for c in normalized if unicodedata.category(c) != "Mn")
+
 
 def normalize_to_ascii(s: str):
     return _normalize_to_ascii(s)

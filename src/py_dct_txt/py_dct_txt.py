@@ -93,7 +93,7 @@ class DctTxt:
                 case "=>":
                     current.s = c_v.strip()
                 case ">>":
-                    current.v = yaml_flow_loads(c_v)
+                    current.v = yaml_flow_loads("{v: " + c_v + "}")["v"]
                 case "<>":
                     current.kvs = yaml_flow_loads("{" + c_v + "}")
                 case _:
@@ -271,7 +271,7 @@ class DctTxtStore:
         files: list[Path] = []
         if path.exists():
             if path.is_dir():
-                files.extend(path.glob("**/*.dct.txt"))
+                files.extend(sorted(path.glob("**/*.dct.txt")))
                 self.read_files.update(path.glob(f"**/{self.saved_info_filename}"))
             elif path.is_file() and path.name.endswith(".dct.txt"):
                 files.append(path)
