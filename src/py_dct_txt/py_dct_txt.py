@@ -306,6 +306,8 @@ class DctTxtStore:
         index_map = self.create_index_map(key_dict.keys())
         for index, keys in index_map.items():
             index_path = path / index
+            info_file = index_path / self.saved_info_filename
+            info = {}
             idx_key_dict = {k: key_dict[k] for k in keys}
             idx_group_dict = self.transpose_dict(idx_key_dict)
             for name, group in idx_group_dict.items():
@@ -326,20 +328,14 @@ class DctTxtStore:
                     with open(file_path, "w", encoding="utf-8") as f:
                         self.serializer.save_list(batch, f)
                     self.saved_files.add(file_path)
-                    info_file = index_path / self.saved_info_filename
-                    if info_file.is_file():
-                        with open(info_file) as f:
-                            info = json.load(f)
-                    else:
-                        info = {}
                     info[name + file_i] = {
                         "start": first_file_key,
                         "end": last_file_key,
                         "total": len(batch),
                     }
-                    with open(info_file, "w") as f:
-                        json.dump(info, f, ensure_ascii=False, indent=4)
-                    self.saved_files.add(info_file)
+            with open(info_file, "w") as f:
+                json.dump(info, f, ensure_ascii=False, indent=4)
+            self.saved_files.add(info_file)
 
     def clean(self):
         old_files = self.read_files - self.saved_files
