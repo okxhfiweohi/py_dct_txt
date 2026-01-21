@@ -15,6 +15,7 @@ from typing import (
 )
 
 from .utils import (
+    FastScalarParser,
     extract_inline_comments,
     normalize_to_ascii,
     split_by_first_sep,
