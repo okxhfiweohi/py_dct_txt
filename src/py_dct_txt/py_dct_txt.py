@@ -270,6 +270,10 @@ class DctTxtStore:
         self.serializer = DctTxt() if serializer is None else serializer
 
     def load(self, path: Path):
+        """
+        return a key dict
+        res[key][group] == item
+        """
         files: list[Path] = []
         if path.exists():
             if path.is_dir():
